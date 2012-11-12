@@ -1,0 +1,13 @@
+; $Id$
+name = Hubot Alerts
+description = "Alerts Campfire when something is amiss."
+
+; Core version (required)
+core = 7.x
+
+; Package name (see http://drupal.org/node/101009 for a list of names)
+; package = 
+
+; PHP version requirement (optional)
+; php = 5.2
+
