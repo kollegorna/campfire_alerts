@@ -12,6 +12,7 @@ function campfire_alerts_run() {
   campfire_alerts_check_css_preprocessning($errors);
   campfire_alerts_check_js_preprocessing($errors);
   campfire_alerts_check_error_reporting($errors);
+  campfire_alerts_check_pending_updates($errors);
 
   if (!empty($errors)) {
     campfire_alerts_campfire_post("Hey! Problems on " . variable_get('site_name', 'Mysteriously unnamed site') . ":");
@@ -47,6 +48,17 @@ function campfire_alerts_check_js_preprocessing(&$errors) {
 function campfire_alerts_check_error_reporting(&$errors) {
   $msg = "Error reporting is misconfigured, errors will be visible to users!";
   if (variable_get('error_level', NULL) == 1) {
+    $errors[] = $msg;
+  }
+}
+
+function campfire_alerts_check_pending_updates(&$errors) {
+  $msg = "There are pending database updates!";
+  require_once DRUPAL_ROOT . '/includes/install.inc';
+  require_once DRUPAL_ROOT . '/includes/update.inc';
+  drupal_load_updates();
+  $updates = update_get_update_list();
+  if (!empty($updates)) {
     $errors[] = $msg;
   }
 }
