@@ -1,0 +1,17 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Campfire Alerts makes a fuss in Campfire when something is amiss.
+ *
+ */
+
+/**
+ * Implementation of hook_cron()
+ */
+function campfire_alerts_cron() {
+  include_once drupal_get_path('module', 'campfire_alerts') . '/campfire_alerts.inc';
+
+  campfire_alerts_run();
+}

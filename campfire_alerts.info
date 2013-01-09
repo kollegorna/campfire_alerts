@@ -1,5 +1,5 @@
 ; $Id$
-name = Hubot Alerts
+name = Campfire Alerts
 description = "Alerts Campfire when something is amiss."
 
 ; Core version (required)
