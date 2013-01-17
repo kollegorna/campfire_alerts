@@ -6,7 +6,7 @@ define('CAMPFIRE_ALERTS_ROOM_ID', getenv('CAMPFIRE_ALERTS_ROOM_ID')); // To get 
 
 function campfire_alerts_run() {
 
-  watchdog('Campfire Alerts!', 'Checking...');
+  watchdog('Campfire Alerts!', t('Checking...'));
   $errors = array();
   campfire_alerts_check_cache($errors);
   campfire_alerts_check_css_preprocessning($errors);
@@ -23,38 +23,38 @@ function campfire_alerts_run() {
     }
     campfire_alerts_campfire_post('horror', 'SoundMessage');
   }
-  else watchdog('Campfire Alerts!', 'All is well!');
+  else watchdog('Campfire Alerts!', t('All is well!'));
 }
 
 function campfire_alerts_check_cache(&$errors) {
-  $msg = "Caching is turned off!";
+  $msg = t("Caching is turned off!");
   if (!variable_get('cache', NULL)) {
     $errors[] = $msg;
   }
 }
 function campfire_alerts_check_css_preprocessning(&$errors) {
-  $msg = "CSS optimization is turned off!";
+  $msg = t("CSS optimization is turned off!");
   if (!variable_get('preprocess_css', NULL)) {
     $errors[] = $msg;
   }
 }
 
 function campfire_alerts_check_js_preprocessing(&$errors) {
-  $msg = "JavaScript optimization is turned off!";
+  $msg = t("JavaScript optimization is turned off!");
   if (!variable_get('preprocess_js', NULL)) {
     $errors[] = $msg;
   }
 }
 
 function campfire_alerts_check_error_reporting(&$errors) {
-  $msg = "Error reporting is misconfigured, errors will be visible to users!";
+  $msg = t("Error reporting is misconfigured, errors will be visible to users!");
   if (variable_get('error_level', NULL) == 1) {
     $errors[] = $msg;
   }
 }
 
 function campfire_alerts_check_pending_updates(&$errors) {
-  $msg = "There are pending database updates!";
+  $msg = t("There are pending database updates!");
   require_once DRUPAL_ROOT . '/includes/install.inc';
   require_once DRUPAL_ROOT . '/includes/update.inc';
   drupal_load_updates();
@@ -65,7 +65,7 @@ function campfire_alerts_check_pending_updates(&$errors) {
 }
 
 function campfire_alerts_check_default_favicon(&$errors) {
-  $msg = "The default Drupal favicon is enabled!";
+  $msg = t("The default Drupal favicon is enabled!");
   // Get the global theme settings.
   $theme_settings = variable_get('theme_settings', array());
   // // Get the settings of the default theme.
@@ -96,7 +96,7 @@ function campfire_alerts_campfire_post($message, $type = 'TextMessage') {
   $output = curl_exec($ch);
   $error = curl_error($ch);
   if ($error) {
-    echo "Error: $error\n";
+    drupal_set_message(t('Campfire Connection Error: @error', array('@error' => $error)), 'warning');
   }
   curl_close($ch);
 }
