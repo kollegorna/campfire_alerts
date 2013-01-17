@@ -13,6 +13,7 @@ function campfire_alerts_run() {
   campfire_alerts_check_js_preprocessing($errors);
   campfire_alerts_check_error_reporting($errors);
   campfire_alerts_check_pending_updates($errors);
+  campfire_alerts_check_default_favicon($errors);
 
   if (!empty($errors)) {
     campfire_alerts_campfire_post("Hey! Problems on " . variable_get('site_name', 'Mysteriously unnamed site') . ":");
@@ -63,6 +64,17 @@ function campfire_alerts_check_pending_updates(&$errors) {
   }
 }
 
+function campfire_alerts_check_default_favicon(&$errors) {
+  $msg = "The default Drupal favicon is enabled!";
+  // Get the global theme settings.
+  $theme_settings = variable_get('theme_settings', array());
+  // // Get the settings of the default theme.
+  $theme_settings = array_merge($theme_settings, variable_get('theme_' . variable_get('theme_default', 'bartik') . '_settings', array()));
+  if ($theme_settings['toggle_favicon'] == 1 && $theme_settings['default_favicon'] == 1) {
+    $errors[] = $msg;
+  }
+}
+
 function campfire_alerts_campfire_post($message, $type = 'TextMessage') {
   $data = array(
     'message' => array (
@@ -82,5 +94,9 @@ function campfire_alerts_campfire_post($message, $type = 'TextMessage') {
   curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   $output = curl_exec($ch);
+  $error = curl_error($ch);
+  if ($error) {
+    echo "Error: $error\n";
+  }
   curl_close($ch);
 }
