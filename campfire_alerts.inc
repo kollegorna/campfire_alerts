@@ -83,6 +83,12 @@ function campfire_alerts_campfire_post($message, $type = 'TextMessage') {
     'room_id' => variable_get('campfire_alerts_room_id', CAMPFIRE_ALERTS_ROOM_ID),
   );
 
+  // HipChat compatibility, silently ignore unsupported types.
+  $hipchat_compatible_types = array('TextMessage', 'PasteMessage');
+  if (strpos($settings['url'], 'hipchat.com') && !in_array($type, $hipchat_compatible_types)) {
+    return;
+  }
+
   $data = array(
     'message' => array (
       'body' => $message,
