@@ -76,20 +76,27 @@ function campfire_alerts_check_default_favicon(&$errors) {
 }
 
 function campfire_alerts_campfire_post($message, $type = 'TextMessage') {
+  // Get settings from variables, with fallback to environment variables.
+  $settings = array(
+    'url' => variable_get('campfire_alerts_url', CAMPFIRE_ALERTS_URL),
+    'authtoken' => variable_get('campfire_alerts_authtoken', CAMPFIRE_ALERTS_AUTHTOKEN),
+    'room_id' => variable_get('campfire_alerts_room_id', CAMPFIRE_ALERTS_ROOM_ID),
+  );
+
   $data = array(
     'message' => array (
       'body' => $message,
       'type' => $type,
     ),
   );
-  $url = CAMPFIRE_ALERTS_URL . '/room/' . CAMPFIRE_ALERTS_ROOM_ID . '/speak.json';
+  $url = $settings['url'] . '/room/' . $settings['room_id'] . '/speak.json';
   $json = json_encode($data);
 
   // cURL init & config
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_USERPWD, CAMPFIRE_ALERTS_AUTHTOKEN . ':x'); 
   curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+  curl_setopt($ch, CURLOPT_USERPWD, $settings['authtoken'] . ':x');
   curl_setopt($ch, CURLOPT_POST, TRUE);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
